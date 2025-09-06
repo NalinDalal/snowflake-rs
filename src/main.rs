@@ -159,5 +159,3 @@ mod tests {
         assert!(ts >= CUSTOM_EPOCH);
     }
 }
-
-
