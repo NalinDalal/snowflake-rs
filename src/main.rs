@@ -29,6 +29,19 @@ pub struct Snowflake {
     last_timestamp: AtomicU64,
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_snowflake_id_generation() {
+        let generator = Snowflake::new(1, 1);
+        let id1 = generator.next_id();
+        let id2 = generator.next_id();
+        assert!(id2 > id1, "IDs should be monotonically increasing");
+    }
+}
+
 impl Snowflake {
     /// Create a new Snowflake generator
     pub fn new(datacenter_id: u64, machine_id: u64) -> Self {

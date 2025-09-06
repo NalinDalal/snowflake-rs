@@ -3,4 +3,12 @@ name = "id-gnrt-rust-impl"
 version = "0.1.0"
 edition = "2024"
 
+description = "A fast, thread-safe Rust implementation of the Snowflake ID generator algorithm."
+authors = ["Nalin Dalal <your.email@example.com>"]
+license = "MIT"
+repository = "https://github.com/NalinDalal/snowflake-rs"
+homepage = "https://github.com/NalinDalal/snowflake-rs"
+documentation = "https://docs.rs/id-gnrt-rust-impl"
+keywords = ["snowflake", "id", "generator", "unique", "distributed"]
+
 [dependencies]
