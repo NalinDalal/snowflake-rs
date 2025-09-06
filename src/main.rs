@@ -2,7 +2,9 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 /// Number of bits allocated to each part of the Snowflake ID
+#[allow(dead_code)]
 const SIGN_BITS: u64 = 1;
+#[allow(dead_code)]
 const TIMESTAMP_BITS: u64 = 41;
 const DATACENTER_BITS: u64 = 5;
 const MACHINE_BITS: u64 = 5;
@@ -110,6 +112,19 @@ impl Snowflake {
     }
 }
 
+fn main() {
+    let generator = Snowflake::new(1, 1);
+
+    for _ in 0..10 {
+        let id = generator.next_id();
+        let (ts, dc, mc, seq) = Snowflake::decode(id);
+        println!(
+            "id = {}, ts = {}, dc = {}, mc = {}, seq = {}",
+            id, ts, dc, mc, seq
+        );
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -137,24 +152,12 @@ mod tests {
     fn test_decode() {
         let generator = Snowflake::new(2, 3);
         let id = generator.next_id();
-        let (ts, dc, mc, seq) = Snowflake::decode(id);
+        let (ts, dc, mc, _seq) = Snowflake::decode(id);
 
         assert_eq!(dc, 2);
         assert_eq!(mc, 3);
-        assert!(seq >= 0);
         assert!(ts >= CUSTOM_EPOCH);
     }
 }
 
-fn main() {
-    let generator = Snowflake::new(1, 1);
 
-    for _ in 0..10 {
-        let id = generator.next_id();
-        let (ts, dc, mc, seq) = Snowflake::decode(id);
-        println!(
-            "id = {}, ts = {}, dc = {}, mc = {}, seq = {}",
-            id, ts, dc, mc, seq
-        );
-    }
-}
