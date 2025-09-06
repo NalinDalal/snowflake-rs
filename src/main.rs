@@ -29,27 +29,20 @@ pub struct Snowflake {
     last_timestamp: AtomicU64,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_snowflake_id_generation() {
-        let generator = Snowflake::new(1, 1);
-        let id1 = generator.next_id();
-        let id2 = generator.next_id();
-        assert!(id2 > id1, "IDs should be monotonically increasing");
-    }
-}
-
 impl Snowflake {
     /// Create a new Snowflake generator
     pub fn new(datacenter_id: u64, machine_id: u64) -> Self {
         if datacenter_id > MAX_DATACENTER {
-            panic!("datacenter_id {} out of range (max {})", datacenter_id, MAX_DATACENTER);
+            panic!(
+                "datacenter_id {} out of range (max {})",
+                datacenter_id, MAX_DATACENTER
+            );
         }
         if machine_id > MAX_MACHINE {
-            panic!("machine_id {} out of range (max {})", machine_id, MAX_MACHINE);
+            panic!(
+                "machine_id {} out of range (max {})",
+                machine_id, MAX_MACHINE
+            );
         }
 
         Snowflake {
@@ -122,11 +115,19 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_snowflake_id_generation() {
+        let generator = Snowflake::new(1, 1);
+        let id1 = generator.next_id();
+        let id2 = generator.next_id();
+        assert!(id2 > id1, "IDs should be monotonically increasing");
+    }
+
+    #[test]
     fn test_unique_and_ordered() {
-        let r#gen = Snowflake::new(1, 1);
+        let gen = Snowflake::new(1, 1);
         let mut last = 0;
         for _ in 0..1000 {
-            let id = r#gen.next_id();
+            let id = gen.next_id();
             assert!(id > last, "IDs must be ordered");
             last = id;
         }
@@ -134,8 +135,8 @@ mod tests {
 
     #[test]
     fn test_decode() {
-        let r#gen = Snowflake::new(2, 3);
-        let id = r#gen.next_id();
+        let gen = Snowflake::new(2, 3);
+        let id = gen.next_id();
         let (ts, dc, mc, seq) = Snowflake::decode(id);
 
         assert_eq!(dc, 2);
@@ -146,11 +147,14 @@ mod tests {
 }
 
 fn main() {
-    let r#gen = Snowflake::new(1, 1);
+    let gen = Snowflake::new(1, 1);
 
     for _ in 0..10 {
-        let id = r#gen.next_id();
+        let id = gen.next_id();
         let (ts, dc, mc, seq) = Snowflake::decode(id);
-        println!("id = {}, ts = {}, dc = {}, mc = {}, seq = {}", id, ts, dc, mc, seq);
+        println!(
+            "id = {}, ts = {}, dc = {}, mc = {}, seq = {}",
+            id, ts, dc, mc, seq
+        );
     }
 }
